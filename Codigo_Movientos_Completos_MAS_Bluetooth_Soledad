@@ -1,0 +1,253 @@
+#include <Wire.h>
+#include <Adafruit_PWMServoDriver.h>
+
+Adafruit_PWMServoDriver pca9685 = Adafruit_PWMServoDriver(0x40); // I2C
+
+// Función para mover servos
+void moverServo(int canal, int angulo) {
+  pca9685.setPWM(canal, 0, angulo); //PWM 150-600 90=375
+}
+
+// Funciones de movimientos
+void adelante() {
+
+  moverServo(0, 300);
+  moverServo(8, 300);
+  delay(200);
+  moverServo(3, 280);
+  moverServo(5, 280);
+  
+  delay(200);
+  moverServo(2, 225);
+  delay(200);
+  moverServo(1, 250);
+  delay(200);
+  moverServo(2, 400);
+  delay(200);
+  moverServo(1, 325);
+  delay(200);
+
+  moverServo(13, 450);
+  delay(200);
+  moverServo(10, 330);
+  delay(200);
+
+  moverServo(6, 350);
+  delay(200);
+  moverServo(7, 425);
+  delay(200);
+  moverServo(6, 275);
+  delay(200);
+  moverServo(7, 350);
+  delay(200);
+
+  moverServo(10, 200);
+  delay(200);
+  moverServo(13, 325);
+  delay(200);
+  moverServo(9, 325);
+  delay(300);
+  moverServo(15, 200);
+  delay(300);
+
+}
+
+void atras() {
+
+  moverServo(0, 300);
+  moverServo(8, 300);
+  delay(200);
+  moverServo(3, 280);
+  moverServo(5, 280);
+  moverServo(1, 400);
+  delay(200);
+  moverServo(1, 325);
+  delay(300);
+
+  moverServo(10, 200);
+  delay(200);
+  moverServo(13, 325);
+  delay(200);
+
+  moverServo(7, 275);
+  delay(200);
+  moverServo(7, 375);
+  delay(300);
+
+  moverServo(13, 450);
+  delay(200);
+  moverServo(10, 330);
+  delay(200);
+  moverServo(9, 325);
+  delay(300);
+}
+
+void giroIzq() {
+
+  moverServo(0, 300);
+  moverServo(8, 300);
+  delay(200);
+  moverServo(3, 280);
+  moverServo(5, 280);
+
+  moverServo(2, 225);
+  delay(200);
+  moverServo(1, 250);
+  delay(200);
+  moverServo(2, 400);
+  delay(200);
+  moverServo(1, 325);
+  delay(200);
+  moverServo(7, 275);
+  delay(200);
+  moverServo(7, 375);
+  delay(300);
+  moverServo(9, 325);
+  delay(300);
+}
+
+void giroDer() {
+
+  moverServo(0, 300);
+  moverServo(8, 300);
+  moverServo(2, 300);
+  delay(200);
+  moverServo(3, 280);
+  moverServo(5, 280);
+  moverServo(5, 280);
+  delay(200);
+  moverServo(6, 375);
+  delay(200);
+  moverServo(7, 400);
+  delay(200);
+  moverServo(6, 300);
+  delay(200);
+  moverServo(7, 375);
+  delay(200);
+  moverServo(1, 395);
+  delay(200);
+  moverServo(1, 325);
+  delay(300);
+  moverServo(9, 325);
+  delay(300);
+}
+
+void punetazoIzq() {
+
+  
+  moverServo(0, 300);
+  moverServo(8, 300);
+  delay(200);
+  moverServo(3, 280);
+  moverServo(5, 280);
+  delay(200);
+
+  moverServo(12, 450);
+  moverServo(13, 325);
+  delay(300);
+  moverServo(9, 450);
+  delay(300);
+  moverServo(15, 200);
+  delay(1000);
+  moverServo(9, 200);
+  delay(300);
+  moverServo(15, 325);
+  moverServo(13, 450);
+  delay(300);
+  moverServo(9, 325);
+  delay(300);
+}
+
+void punetazoDer() {
+
+  moverServo(0, 300);
+  moverServo(8, 300);
+
+  delay(200);
+  moverServo(3, 280);
+  moverServo(5, 280);
+  delay(200);
+  moverServo(15, 200);
+  moverServo(11, 350);
+  delay(300);
+  moverServo(9, 200);
+  delay(300);
+  moverServo(12, 325);
+  delay(1000);
+  moverServo(9, 450);
+  delay(300);
+  moverServo(12, 450);
+  moverServo(11, 275);
+  delay(300);
+  moverServo(9, 325);
+  delay(300);
+}
+
+void setup() {
+  Wire.begin();
+  pca9685.begin();
+  pca9685.setPWMFreq(50); // Frecuencia 50Hz
+  Serial.begin(9600); // Configuración del Bluetooth (HC-05)
+  moverServo(5, 300);
+  moverServo(3, 280);
+    moverServo(11, 325);
+        moverServo(1, 325);
+                moverServo(7, 375);
+}
+unsigned long lastCommandTime = 0;
+unsigned long delayBetweenCommands = 100; // milisegundos
+
+void loop() {
+  if (Serial.available()) {
+    String entrada = Serial.readStringUntil('\n');  // Leer hasta salto de línea
+    entrada.trim(); // Elimina \r, \n, espacios
+
+    if (entrada.length() == 0) return;
+
+    char comando = entrada.charAt(0);
+    if (comando == 'S') return;
+
+    // Verifica si ha pasado suficiente tiempo desde el último comando
+    unsigned long currentTime = millis();
+    if (currentTime - lastCommandTime < delayBetweenCommands) {
+      return; // Si no ha pasado suficiente tiempo, ignora el comando
+    }
+
+    lastCommandTime = currentTime; // Actualiza el tiempo del último comando
+
+    Serial.print("Comando recibido desde módulo Bluetooth: ");
+    Serial.println(comando);
+
+    switch (comando) {
+      case 'F':
+        adelante();
+        Serial.println("Adelante");
+        break;
+      case 'B':
+        atras();
+        Serial.println("Atras");
+        break;
+      case 'L':
+        giroIzq();
+        Serial.println("IZQ");
+        break;
+      case 'R':
+        giroDer();
+        Serial.println("DER");
+        break;
+      case 'W':
+        punetazoIzq();
+        Serial.println("PNT IZQ");
+        break;
+      case 'Y':
+        punetazoDer();
+        Serial.println("PNT DER");
+        break;
+      default:
+        Serial.println("Comando no válido");
+        break;
+    }
+
+    delay(50);  // Esto también da tiempo para evitar repeticiones rápidas
+  }
+}
