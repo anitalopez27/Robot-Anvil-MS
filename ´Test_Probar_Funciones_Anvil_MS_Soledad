@@ -1,0 +1,49 @@
+#include <Wire.h>
+#include <Adafruit_PWMServoDriver.h>
+
+Adafruit_PWMServoDriver pca9685 = Adafruit_PWMServoDriver(0x40); //I2C
+
+// Función asignacion servo
+void moverServo(int canal, int angulo) {
+    pca9685.setPWM(canal, 0, angulo);
+}
+
+// Función secuencia de movimientos
+void ejecutarMovimiento() {
+  //Ejemplo de Movimiento
+ moverServo(0, 325);
+  moverServo(3, 300);
+  moverServo(5, 335);
+  moverServo(1, 450);
+  delay(200);
+  moverServo(1, 325);
+  delay(300);
+
+  moverServo(10, 200);
+  delay(200);
+  moverServo(13, 325);
+  delay(200);
+
+  moverServo(7, 225);
+  delay(200);
+  moverServo(7, 375);
+  delay(300);
+
+  moverServo(13, 450);
+  delay(200);
+  moverServo(10, 330);
+  delay(200);
+  moverServo(9, 325);
+  delay(300);
+
+
+}
+
+void loop() {
+    ejecutarMovimiento();
+    delay(10); 
+}
+
+void setup() {
+    
+}
